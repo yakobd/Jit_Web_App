@@ -10,18 +10,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { role, teachersData } from "@/src/lib/data";
 import FormModal from "@/src/components/FormModal";
+import { Class, Subject, Teacher } from "@prisma/client";
+import prisma from "@/src/lib/prisma";
 
-type Teacher = {
-  id: number;
-  teacherId: string;
-  name: string;
-  email?: string;
-  photo: string;
-  phone: string;
-  subjects: string[];
-  classes: string[];
-  address: string;
-};
+type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 const columns = [
   {
@@ -59,57 +51,66 @@ const columns = [
   },
 ];
 
-const TeacherListPage = () => {
-  const renderRow = (item: Teacher) => (
-    <tr
-      key={item.id}
-      className="border-b border-[#083765] even:bg-slate-100 text-sm hover:bg-gray-200"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <Image
-          src={item.photo}
-          alt=""
-          width={40}
-          height={40}
-          className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
-        />
+const renderRow = (item: TeacherList) => (
+  <tr
+    key={item.id}
+    className="border-b border-[#083765] even:bg-slate-100 text-sm hover:bg-gray-200"
+  >
+    <td className="flex items-center gap-4 p-4">
+      <Image
+        src={item.img ?? "/noAvatar.png"}
+        alt=""
+        width={40}
+        height={40}
+        className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
+      />
 
-        <div className="flex flex-col">
-          <h3 className="font-semibold text-[#083765]">{item.name}</h3>
-          <p className="text-xs text-[#083765]">{item?.email}</p>
-        </div>
-      </td>
+      <div className="flex flex-col">
+        <h3 className="font-semibold text-[#083765]">{item.name}</h3>
+        <p className="text-xs text-[#083765]">{item?.email}</p>
+      </div>
+    </td>
 
-      <td className="hidden md:table-cell text-[#083765] text-[13px]">
-        {item.teacherId}
-      </td>
-      <td className="hidden md:table-cell text-[#083765] text-[13px]">
-        {item.subjects.join(",")}
-      </td>
-      <td className="hidden md:table-cell text-[#083765] text-[13px]">
-        {item.classes.join(",")}
-      </td>
-      <td className="hidden md:table-cell text-[#083765] text-[13px]">
-        {item.phone}
-      </td>
-      <td className="hidden md:table-cell text-[#083765] text-[13px]">
-        {item.address}
-      </td>
+    <td className="hidden md:table-cell text-[#083765] text-[13px]">
+      {item.username}
+    </td>
+    <td className="hidden md:table-cell text-[#083765] text-[13px]">
+      {item.subjects.map((subject) => subject.name).join(",")}
+    </td>
+    <td className="hidden md:table-cell text-[#083765] text-[13px]">
+      {item.classes.map((classItem) => classItem.name).join(",")}
+    </td>
+    <td className="hidden md:table-cell text-[#083765] text-[13px]">
+      {item.phone}
+    </td>
+    <td className="hidden md:table-cell text-[#083765] text-[13px]">
+      {item.address}
+    </td>
 
-      <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-[#FFFB15]">
-              <FaStreetView className="text-[#083765] font-bold text-[16px]" />
-            </button>
-          </Link>
-          {role === "admin" && (
-            <FormModal table="teacher" type="delete" id={item.id} />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+    <td>
+      <div className="flex items-center gap-2">
+        <Link href={`/list/teachers/${item.id}`}>
+          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-[#FFFB15]">
+            <FaStreetView className="text-[#083765] font-bold text-[16px]" />
+          </button>
+        </Link>
+        {/* {role === "admin" && (
+          <FormModal table="teacher" type="delete" id={item.id} />
+        )} */}
+      </div>
+    </td>
+  </tr>
+);
+
+const TeacherListPage = async () => {
+  const data = await prisma.teacher.findMany({
+    include: {
+      subjects: true,
+      classes: true,
+    },
+  });
+
+  console.log(data);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -133,7 +134,7 @@ const TeacherListPage = () => {
       </div>
 
       {/* LIST SECTION  */}
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
 
       {/* PAGINATION SECTION  */}
 

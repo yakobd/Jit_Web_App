@@ -11,7 +11,7 @@ datasource db {
 
 model Admin {
     id String @id
-    username String @unique
+    username String 
 }
 
 model Student {
