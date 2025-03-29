@@ -58,7 +58,7 @@ const renderRow = (item: TeacherList) => (
   >
     <td className="flex items-center gap-4 p-4">
       <Image
-        src={item.img ?? "/noAvatar.png"}
+        src={"/noAvatar.png"}
         alt=""
         width={40}
         height={40}
@@ -94,23 +94,30 @@ const renderRow = (item: TeacherList) => (
             <FaStreetView className="text-[#083765] font-bold text-[16px]" />
           </button>
         </Link>
-        {/* {role === "admin" && (
+        {role === "admin" && (
           <FormModal table="teacher" type="delete" id={item.id} />
-        )} */}
+        )}
       </div>
     </td>
   </tr>
 );
 
-const TeacherListPage = async () => {
+const TeacherListPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string } | undefined;
+}) => {
+  console.log(searchParams);
   const data = await prisma.teacher.findMany({
     include: {
       subjects: true,
       classes: true,
     },
+
+    take: 10,
   });
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
