@@ -10,8 +10,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { role, teachersData } from "@/src/lib/data";
 import FormModal from "@/src/components/FormModal";
-import { Class, Subject, Teacher } from "@prisma/client";
+import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
+import { ITEM_PER_PAGE } from "@/src/lib/settings";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
@@ -105,19 +106,49 @@ const renderRow = (item: TeacherList) => (
 const TeacherListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string } | undefined;
+  searchParams: { [key: string]: string | undefined };
 }) => {
-  console.log(searchParams);
-  const data = await prisma.teacher.findMany({
-    include: {
-      subjects: true,
-      classes: true,
-    },
+  const { page, ...queryParams } = searchParams;
 
-    take: 10,
-  });
+  const p = page ? parseInt(page) : 1;
 
-  // console.log(data);
+  // URL PARAMS CONDITIONS
+
+  const query: Prisma.TeacherWhereInput = {};
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "classId":
+            {
+              query.lessons = {
+                some: {
+                  classId: parseInt(value),
+                },
+              };
+            }
+            break;
+          case "search":
+            query.name = { contains: value, mode: "insensitive" };
+        }
+      }
+    }
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.teacher.findMany({
+      where: query,
+      include: {
+        subjects: true,
+        classes: true,
+      },
+
+      take: ITEM_PER_PAGE,
+      skip: 5 * (p - 1),
+    }),
+    prisma.teacher.count({ where: query }),
+  ]);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -145,7 +176,7 @@ const TeacherListPage = async ({
 
       {/* PAGINATION SECTION  */}
 
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };
