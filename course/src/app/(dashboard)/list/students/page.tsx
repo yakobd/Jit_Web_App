@@ -125,6 +125,9 @@ const StudentListPage = async ({
             break;
           case "search":
             query.name = { contains: value, mode: "insensitive" };
+            break;
+          default:
+            break;
         }
       }
     }
@@ -137,7 +140,7 @@ const StudentListPage = async ({
       },
 
       take: ITEM_PER_PAGE,
-      skip: 5 * (p - 1),
+      skip: 10 * (p - 1),
     }),
     prisma.student.count({ where: query }),
   ]);
