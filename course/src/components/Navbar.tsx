@@ -2,6 +2,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
+import { UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -38,9 +39,10 @@ const Navbar = () => {
           <span className="text-[10px] text-right">Admin</span>
         </div>
 
-        <div>
+        {/* <div>
           <RxAvatar className="rounded-full text-3xl text-[#083765] font-bold cursor-pointer" />
-        </div>
+        </div> */}
+        <UserButton />
       </div>
     </div>
   );
