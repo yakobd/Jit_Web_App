@@ -53,6 +53,7 @@ const columns = [
 ];
 
 const renderRow = (item: TeacherList) => (
+  
   <tr
     key={item.id}
     className="border-b border-[#083765] even:bg-slate-100 text-sm hover:bg-gray-200"

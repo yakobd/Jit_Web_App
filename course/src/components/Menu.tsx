@@ -16,7 +16,7 @@ import { IoMdSettings } from "react-icons/io";
 import { LuLogOut } from "react-icons/lu";
 import { TiTick } from "react-icons/ti";
 import { MdSubject } from "react-icons/md";
-import { role } from "../lib/data";
+import { currentUser } from "@clerk/nextjs/server";
 
 const menuItems = [
   {
@@ -128,7 +128,10 @@ const menuItems = [
   },
 ];
 
-const Menu = () => {
+const Menu = async () => {
+  const user = await currentUser();
+  const role = user?.publicMetadata.role as string;
+
   return (
     <div className="mt-4 mb-4 text-sm">
       {menuItems.map((i) => (

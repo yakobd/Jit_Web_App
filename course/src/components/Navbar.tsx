@@ -3,8 +3,11 @@ import { MdMessage } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import { UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const user = await currentUser();
+
   return (
     <div className="flex items-center justify-between p-4">
       {/* SEARCH BAR  */}
@@ -36,7 +39,9 @@ const Navbar = () => {
           <span className="text-xs leading-3 text-[#083765] font-bold">
             Yakob Dereje
           </span>
-          <span className="text-[10px] text-right">Admin</span>
+          <span className="text-[10px] text-right">
+            {user?.publicMetadata?.role as string}
+          </span>
         </div>
 
         {/* <div>
