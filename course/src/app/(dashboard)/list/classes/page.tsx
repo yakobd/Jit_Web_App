@@ -8,11 +8,12 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import { classesData, role, subjectsData } from "@/src/lib/data";
+
 import FormModal from "@/src/components/FormModal";
 import { Class, Prisma, Teacher } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";
+import { role } from "@/src/lib/utils";
 
 type ClassList = Class & { supervisor: Teacher };
 
@@ -36,10 +37,14 @@ const columns = [
     accessor: "supervisor",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: ClassList) => (
