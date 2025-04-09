@@ -8,11 +8,11 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import { resultsData, role } from "@/src/lib/data";
 import FormModal from "@/src/components/FormModal";
 import { Prisma } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";
+import { currentUserId, role } from "@/src/lib/utils";
 
 type ResultList = {
   id: number;
@@ -55,10 +55,14 @@ const columns = [
     accessor: "date",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin" || role === "teacher"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: ResultList) => (
@@ -79,7 +83,7 @@ const renderRow = (item: ResultList) => (
 
     <td>
       <div className="flex items-center gap-2">
-        {role === "admin" && (
+        {(role === "admin" || role === "teacher") && (
           <>
             <FormModal table="result" type="update" data={item} />
             <FormModal table="result" type="delete" id={item.id} />
@@ -122,6 +126,27 @@ const ResultListPage = async ({
       }
     }
   }
+
+  // ROLE CONDITIONs
+
+  switch (role) {
+    case "admin":
+      break;
+    case "teacher":
+      query.OR = [
+        { exam: { lesson: { teacherId: currentUserId! } } },
+        { assignment: { lesson: { teacherId: currentUserId! } } },
+      ];
+      break;
+
+    case "student":
+      query.studentId = currentUserId!;
+      break;
+
+    default:
+      break;
+  }
+
   const [dataRes, count] = await prisma.$transaction([
     prisma.result.findMany({
       where: query,
@@ -191,7 +216,9 @@ const ResultListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFFB15]">
               <FaSortAmountDown className="text-[#083765] font-bold text-[16px]" />
             </button>
-            {role === "admin" && <FormModal table="result" type="create" />}
+            {(role === "admin" || role === "teacher") && (
+              <FormModal table="result" type="create" />
+            )}
           </div>
         </div>
       </div>

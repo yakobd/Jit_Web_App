@@ -8,11 +8,11 @@ import { FaStreetView } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import { role, studentsData } from "@/src/lib/data";
 import FormModal from "@/src/components/FormModal";
 import { Class, Prisma, Student } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";
+import { role } from "@/src/lib/utils";
 
 type StudentList = Student & { class: Class };
 
@@ -41,10 +41,14 @@ const columns = [
     accessor: "address",
     className: "hidden lg:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: StudentList) => (

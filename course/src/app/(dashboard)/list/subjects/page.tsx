@@ -8,11 +8,11 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import { role, subjectsData } from "@/src/lib/data";
 import FormModal from "@/src/components/FormModal";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";
+import { role } from "@/src/lib/utils";
 
 type SubjectList = Subject & { teachers: Teacher[] };
 
