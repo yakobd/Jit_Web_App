@@ -1,9 +1,9 @@
 import UserCard from "@/src/components/UserCard";
-import CountChart from "@/src/components/CountChart";
-import AttendanceChart from "@/src/components/AttendanceChart";
 import FinanceChart from "@/src/components/FinanceChart";
 import EventCalendar from "@/src/components/EventCalendar";
 import Announcements from "@/src/components/Announcements";
+import CountChartContainer from "@/src/components/CountChartContainer";
+import AttendanceChartContainer from "@/src/components/AttendanceChartContainer";
 
 const AdminPage = () => {
   return (
@@ -13,22 +13,22 @@ const AdminPage = () => {
         {/* USER CARDS  */}
 
         <div className="flex gap-4 justify-between flex-wrap">
-          <UserCard type="Students" />
-          <UserCard type="Teachers" />
-          {/* <UserCard type="Classes" /> */}
-          <UserCard type="Lessons" />
+          <UserCard type="admin" />
+          <UserCard type="student" />
+          <UserCard type="teacher" />
+          <UserCard type="lesson" />
         </div>
 
         {/* MIDDLE CHARTS   */}
         <div className="flex gap-4 flex-col lg:flex-row">
           {/* COUNT CHART  */}
           <div className="w-full lg:w-1/3 h-[450px]">
-            <CountChart />
+            <CountChartContainer />
           </div>
 
           {/* ATTENDANCE CHART   */}
           <div className="w-full lg:w-2/3 h-[450px]">
-            <AttendanceChart />
+            <AttendanceChartContainer />
           </div>
         </div>
 

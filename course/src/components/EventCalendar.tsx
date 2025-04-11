@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { IoIosMore } from "react-icons/io";
+
 import { IoLocation } from "react-icons/io5";
 
 type ValuePiece = Date | null;
@@ -44,13 +44,7 @@ const EventCalendar = () => {
   const [value, onChange] = useState<Value>(new Date());
 
   return (
-    <div className="bg-gray-200 p-2 rounded-md">
-      <Calendar onChange={onChange} value={value} />
-      <div className="flex items-center justify-between ">
-        <h1 className="text-xl font-bold my-4 text-[#083765]">Events</h1>
-        <IoIosMore className="text-[#083765] text-[25px] font-bold" />
-      </div>
-      <div className="flex flex-col gap-4 ">
+
         {events.map((event) => (
           <div
             className="p-5 rounded-md border-b-2 border-b-gray-500 border-t-4 odd:border-t-[#083765] even:border-t-[#fffb15] bg-white"
@@ -74,8 +68,7 @@ const EventCalendar = () => {
             </div>
           </div>
         ))}
-      </div>
-    </div>
+     
   );
 };
 
