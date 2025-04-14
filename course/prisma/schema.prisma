@@ -157,6 +157,7 @@ model Event {
     id Int @id @default(autoincrement())
     title String
     description String
+    // location String
     startTime DateTime
     endTime DateTime
 
@@ -169,6 +170,7 @@ model Announcement {
     title String
     description String
     date DateTime
+    location String
     
 
     classId Int?

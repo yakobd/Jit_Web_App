@@ -891,12 +891,19 @@ async function main() {
   await Promise.all(
     Array.from({ length: 20 }).map((_, i) =>
       prisma.event.create({
+        // data: {
+        //   title: `Event ${i + 1}: ${faker.word.words(3)}`,
+        //   description: faker.lorem.paragraph(),
+        //   startTime: faker.date.future(),
+        //   endTime: faker.date.future(),
+        //   classId: faker.helpers.arrayElement(classes).id,
+        // },
         data: {
-          title: `Event ${i + 1}: ${faker.word.words(3)}`,
-          description: faker.lorem.paragraph(),
-          startTime: faker.date.future(),
-          endTime: faker.date.future(),
-          classId: faker.helpers.arrayElement(classes).id,
+          title: `Event ${i}`,
+          description: `Description for Event ${i}`,
+          startTime: new Date(new Date().setHours(new Date().getHours() + 1)),
+          endTime: new Date(new Date().setHours(new Date().getHours() + 2)),
+          classId: (i % 5) + 1,
         },
       })
     )

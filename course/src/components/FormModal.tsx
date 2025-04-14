@@ -1,5 +1,5 @@
 "use client";
-import React, { JSX } from "react";
+import React, { Dispatch, JSX, SetStateAction, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { FaStreetView } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -7,6 +7,24 @@ import { FaEdit } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useFormState } from "react-dom";
+import { deleteSubject } from "../lib/actions";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+
+const deleteActionMap = {
+  subject: deleteSubject,
+  class: deleteSubject,
+  teacher: deleteSubject,
+  student: deleteSubject,
+  lesson: deleteSubject,
+  exam: deleteSubject,
+  assignment: deleteSubject,
+  result: deleteSubject,
+  attendance: deleteSubject,
+  event: deleteSubject,
+  announcement: deleteSubject,
+};
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => (
@@ -87,19 +105,45 @@ const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
 });
 
 const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
+  [key: string]: (
+    setOpen: Dispatch<SetStateAction<boolean>>,
+    type: "create" | "update",
+    data?: any
+  ) => JSX.Element;
 } = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />,
-  subject: (type, data) => <SubjectForm type={type} data={data} />,
-  class: (type, data) => <ClassForm type={type} data={data} />,
-  lesson: (type, data) => <LessonForm type={type} data={data} />,
-  exam: (type, data) => <ExamForm type={type} data={data} />,
-  assignment: (type, data) => <AssignmentForm type={type} data={data} />,
-  result: (type, data) => <ResultForm type={type} data={data} />,
-  attendance: (type, data) => <AttendanceForm type={type} data={data} />,
-  event: (type, data) => <EventForm type={type} data={data} />,
-  announcement: (type, data) => <AnnouncementForm type={type} data={data} />,
+  teacher: (setOpen, type, data) => (
+    <TeacherForm type={type} data={data} setOpen={setOpen} />
+  ),
+  student: (setOpen, type, data) => (
+    <StudentForm type={type} data={data} setOpen={setOpen} />
+  ),
+  subject: (setOpen, type, data) => (
+    <SubjectForm type={type} data={data} setOpen={setOpen} />
+  ),
+  class: (setOpen, type, data) => (
+    <ClassForm type={type} data={data} setOpen={setOpen} />
+  ),
+  lesson: (setOpen, type, data) => (
+    <LessonForm type={type} data={data} setOpen={setOpen} />
+  ),
+  exam: (setOpen, type, data) => (
+    <ExamForm type={type} data={data} setOpen={setOpen} />
+  ),
+  assignment: (setOpen, type, data) => (
+    <AssignmentForm type={type} data={data} setOpen={setOpen} />
+  ),
+  result: (setOpen, type, data) => (
+    <ResultForm type={type} data={data} setOpen={setOpen} />
+  ),
+  attendance: (setOpen, type, data) => (
+    <AttendanceForm type={type} data={data} setOpen={setOpen} />
+  ),
+  event: (setOpen, type, data) => (
+    <EventForm type={type} data={data} setOpen={setOpen} />
+  ),
+  announcement: (setOpen, type, data) => (
+    <AnnouncementForm type={type} data={data} setOpen={setOpen} />
+  ),
 };
 
 const FormModal = ({
@@ -137,8 +181,24 @@ const FormModal = ({
   const [open, setOpen] = useState(false);
 
   const Form = () => {
+    const [state, formAction] = useFormState(deleteActionMap[table], {
+      success: false,
+      error: false,
+    });
+
+    const router = useRouter();
+
+    useEffect(() => {
+      if (state.success) {
+        toast(`Subject has been deleted!`);
+        setOpen(false);
+        router.refresh();
+      }
+    }, [state]);
+
     return type === "delete" && id ? (
-      <form action="" className="flex flex-col p-4 gap-4">
+      <form action={formAction} className="flex flex-col p-4 gap-4">
+        <input type="text | number" name="id" value={id} hidden />
         <span className="text-[#FFFB15] text-[15px] text-center font-bold">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
@@ -152,7 +212,7 @@ const FormModal = ({
         </div>
       </form>
     ) : type === "create" || type === "update" ? (
-      forms[table](type, data)
+      forms[table](setOpen, type, data)
     ) : (
       "Form not found!"
     );
