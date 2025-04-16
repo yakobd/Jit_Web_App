@@ -88,7 +88,7 @@ const SubjectForm = ({
             {teachers.map(
               (teacher: { id: string; name: string; surname: string }) => (
                 <option
-                  className="text-[#FFFB15] font-bold"
+                  className="text-[#FFFB15] bg-[#083765] font-bold"
                   value={teacher.id}
                   key={teacher.id}
                 >

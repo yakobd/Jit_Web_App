@@ -4,19 +4,44 @@ export const subjectSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, { message: "Subject name is required!" }),
   teachers: z.array(z.string()), // teacher ids
-  // .max(20, { message: "Username must be at most 20 characters long!" }),
-  //   email: z.string().email({ message: "Invalid email address!" }),
-  //   password: z
-  //     .string()
-  //     .min(8, { message: "Password must be at least 8 characters long!" }),
-  //   firstName: z.string().min(1, { message: "First Name is Required!" }),
-  //   lastName: z.string().min(1, { message: "Last Name is Required!" }),
-  //   phone: z.number().min(1, { message: "Phone is Required!" }),
-  //   address: z.string().min(1, { message: "Address is Required!" }),
-  //   bloodType: z.string().min(1, { message: "Blood Type is Required!" }),
-  //   birthday: z.date({ message: "Birthday is Required!" }),
-  //   sex: z.enum(["male", "female"], { message: "Sex is Required!" }),
-  //   img: z.instanceof(File, { message: "Image is required" }),
 });
 
 export type SubjectSchema = z.infer<typeof subjectSchema>;
+
+export const classSchema = z.object({
+  id: z.coerce.number().optional(),
+  name: z.string().min(1, { message: "Class name is required!" }),
+  capacity: z.coerce.number().min(1, { message: "Capacity is required!" }),
+  gradeId: z.coerce.number().min(1, { message: "Grade is required!" }),
+  supervisorId: z.coerce.string().optional(),
+});
+
+export type ClassSchema = z.infer<typeof classSchema>;
+
+export const teacherSchema = z.object({
+  id: z.string().optional(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long!" })
+    .max(20, { message: "Username must be at most 20 characters long!" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long!" }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address!" })
+    
+    .or(z.literal("")),
+  name: z.string().min(1, { message: "First Name is Required!" }),
+  surname: z.string().min(1, { message: "Last Name is Required!" }),
+  phone: z.string(),
+  address: z.string(),
+  // img: z.instanceof(File, { message: "Image is required" }),
+  img: z.string(),
+  bloodType: z.string().min(1, { message: "Blood Type is Required!" }),
+  birthday: z.coerce.date({ message: "Birthday is Required!" }),
+  sex: z.enum(["MALE", "FEMALE"], { message: "Sex is Required!" }),
+  subjects: z.array(z.string()).optional(), // subject ids
+});
+
+export type TeacherSchema = z.infer<typeof teacherSchema>;

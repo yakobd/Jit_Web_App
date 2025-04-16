@@ -3,16 +3,14 @@ import Pagination from "@/src/components/Pagination";
 import Table from "@/src/components/Table";
 import { ImFilter } from "react-icons/im";
 import { FaSortAmountDown } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
 import { FaStreetView } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
-import FormModal from "@/src/components/FormModal";
 import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";
 import { role } from "@/src/lib/utils";
+import FormContainer from "@/src/components/FormContainer";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
@@ -100,7 +98,7 @@ const renderRow = (item: TeacherList) => (
           </button>
         </Link>
         {role === "admin" && (
-          <FormModal table="teacher" type="delete" id={item.id} />
+          <FormContainer table="teacher" type="delete" id={item.id} />
         )}
       </div>
     </td>
@@ -173,7 +171,9 @@ const TeacherListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-[#FFFB15]">
               <FaSortAmountDown className="text-[#083765] font-bold text-[16px]" />
             </button>
-            {role === "admin" && <FormModal table="teacher" type="create" />}
+            {role === "admin" && (
+              <FormContainer table="teacher" type="create" />
+            )}
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@ import Pagination from "@/src/components/Pagination";
 import Table from "@/src/components/Table";
 import { ImFilter } from "react-icons/im";
 import { FaSortAmountDown } from "react-icons/fa";
-import FormModal from "@/src/components/FormModal";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 import prisma from "@/src/lib/prisma";
 import { ITEM_PER_PAGE } from "@/src/lib/settings";

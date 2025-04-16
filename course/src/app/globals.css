@@ -98,3 +98,15 @@
   color: #083765 !important;
   font-weight: bold !important;
 }
+
+/* custom-toast.css */
+.custom-toast {
+  background-color: #083765 !important;
+  color: #fffb15 !important;
+  font-weight: bold !important;
+}
+
+.custom-toast-progress {
+  background: #fffb15 !important;
+  font-weight: bold !important;
+}

@@ -8,15 +8,15 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useFormState } from "react-dom";
-import { deleteSubject } from "../lib/actions";
+import { deleteClass, deleteSubject, deleteTeacher } from "../lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
 
 const deleteActionMap = {
   subject: deleteSubject,
-  class: deleteSubject,
-  teacher: deleteSubject,
+  class: deleteClass,
+  teacher: deleteTeacher,
   student: deleteSubject,
   lesson: deleteSubject,
   exam: deleteSubject,
@@ -34,6 +34,7 @@ const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
     </h1>
   ),
 });
+
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   loading: () => (
     <h1 className="text-[#FFFB15] text-[15px] text-center font-bold">
@@ -121,14 +122,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
-  student: (setOpen, type, data) => (
-    <StudentForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
+  // student: (setOpen, type, data) => (
+  //   <StudentForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
   subject: (setOpen, type, data, relatedData) => (
     <SubjectForm
       type={type}
@@ -137,7 +138,7 @@ const forms: {
       relatedData={relatedData}
     />
   ),
-  class: (setOpen, type, data) => (
+  class: (setOpen, type, data, relatedData) => (
     <ClassForm
       type={type}
       data={data}
@@ -145,62 +146,62 @@ const forms: {
       relatedData={relatedData}
     />
   ),
-  lesson: (setOpen, type, data) => (
-    <LessonForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  exam: (setOpen, type, data) => (
-    <ExamForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  assignment: (setOpen, type, data) => (
-    <AssignmentForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  result: (setOpen, type, data) => (
-    <ResultForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  attendance: (setOpen, type, data) => (
-    <AttendanceForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  event: (setOpen, type, data) => (
-    <EventForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
-  announcement: (setOpen, type, data) => (
-    <AnnouncementForm
-      type={type}
-      data={data}
-      setOpen={setOpen}
-      relatedData={relatedData}
-    />
-  ),
+  // lesson: (setOpen, type, data) => (
+  //   <LessonForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // exam: (setOpen, type, data) => (
+  //   <ExamForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // assignment: (setOpen, type, data) => (
+  //   <AssignmentForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // result: (setOpen, type, data) => (
+  //   <ResultForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // attendance: (setOpen, type, data) => (
+  //   <AttendanceForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // event: (setOpen, type, data) => (
+  //   <EventForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
+  // announcement: (setOpen, type, data) => (
+  //   <AnnouncementForm
+  //     type={type}
+  //     data={data}
+  //     setOpen={setOpen}
+  //     relatedData={relatedData}
+  //   />
+  // ),
 };
 
 const FormModal = ({
