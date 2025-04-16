@@ -144,6 +144,7 @@ const TeacherForm = ({
             </p>
           )}
         </div>
+
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-[#FFFB15] flex items-center gap-2 cursor-pointer"
