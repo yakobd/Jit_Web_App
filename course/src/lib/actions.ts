@@ -194,7 +194,7 @@ export const updateTeacher = async (
       where: {
         id: data.id,
       },
-      data,
+      // data,
     });
 
     // revalidatePath("/list/teachers");

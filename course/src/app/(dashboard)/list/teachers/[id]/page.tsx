@@ -12,9 +12,41 @@ import BigCalendar from "@/src/components/BigCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Announcements from "@/src/components/Announcements";
 import Performance from "@/src/components/Performance";
-import FormModal from "@/src/components/FormModal";
+import prisma from "@/src/lib/prisma";
+import { notFound } from "next/navigation";
+// import { role } from "@/src/lib/utils";
+import FormContainer from "@/src/components/FormContainer";
+import { Teacher } from "@prisma/client";
+import { auth } from "@clerk/nextjs/server";
 
-const SingleTeacherPage = () => {
+const SingleTeacherPage = async ({
+  params: { id },
+}: {
+  params: { id: string };
+}) => {
+  const { sessionClaims } = await auth();
+  const role = (sessionClaims?.metadata as { role: string })?.role;
+
+  const teacher:
+    | (Teacher & {
+        _count: { subjects: number; lessons: number; classes: number };
+      })
+    | null = await prisma.teacher.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: {
+          subjects: true,
+          lessons: true,
+          classes: true,
+        },
+      },
+    },
+  });
+
+  if (!teacher) {
+    return notFound();
+  }
   return (
     <div className="flex flex-1 flex-col p-4 gap-4 xl:flex-row">
       {/* LEFT  */}
@@ -25,7 +57,7 @@ const SingleTeacherPage = () => {
           <div className="flex flex-1 bg-[#083765] rounded-md gap-4 px-4 py-6">
             <div className="w-1/3">
               <Image
-                src="https://images.pexels.com/photos/2888150/pexels-photo-2888150.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src={teacher.img || "/noAvatar.png"}
                 alt=""
                 width={144}
                 height={144}
@@ -36,26 +68,11 @@ const SingleTeacherPage = () => {
             <div className="flex flex-col justify-between w-2/3 gap-4">
               <div className="flex justify-between gap-4 items-center">
                 <h1 className="text-[#FFFB15] text-xl font-bold">
-                  Yakob Dereje
+                  {teacher.name + " " + teacher.surname}
                 </h1>
-                <FormModal
-                  table="teacher"
-                  type="update"
-                  data={{
-                    id: 1,
-                    username: "yakobd",
-                    email: "john@doe.com",
-                    password: "password",
-                    firstName: "Yakob",
-                    lastName: "Dereje",
-                    phone: "+251 961 00 8600",
-                    address: "123 Main St, Anytown, USA",
-                    bloodTpe: "A+",
-                    dateOfBirth: "2001-03-11",
-                    sex: "male",
-                    img: "https://images.pexels.com/photos/2888150/pexels-photo-2888150.jpeg?auto=compress&cs=tinysrgb&w=1200",
-                  }}
-                />
+                {role === "admin" && (
+                  <FormContainer table="teacher" type="update" data={teacher} />
+                )}
               </div>
               <p className="text-[#FFFB15] text-sm">
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit.
@@ -63,21 +80,21 @@ const SingleTeacherPage = () => {
               <div className="flex flex-wrap justify-between text-xs font-medium gap-2 items-center">
                 <div className="flex w-full 2xl:w-1/3 gap-2 items-center lg:w-full md:w-1/3">
                   <MdBloodtype className="text-[#FFFB15] text-[14px] font-bold" />
-                  <span className="text-[#FFFB15]">A+</span>
+                  <span className="text-[#FFFB15]">{teacher.bloodType}</span>
                 </div>
                 <div className="flex w-full 2xl:w-1/3 gap-2 items-center lg:w-full md:w-1/3">
                   <MdOutlineDateRange className="text-[#FFFB15] text-[14px] font-bold" />
-                  <span className="text-[#FFFB15]">January 2025</span>
-                </div>
-                <div className="flex w-full 2xl:w-1/3 gap-2 items-center lg:w-full md:w-1/3">
-                  <IoMdMail className="text-[#FFFB15] text-[14px] font-bold" />
                   <span className="text-[#FFFB15]">
-                    yakobdereje.yd@gmail.com
+                    {new Intl.DateTimeFormat("en-GB").format(teacher.birthday)}
                   </span>
                 </div>
                 <div className="flex w-full 2xl:w-1/3 gap-2 items-center lg:w-full md:w-1/3">
+                  <IoMdMail className="text-[#FFFB15] text-[14px] font-bold" />
+                  <span className="text-[#FFFB15]">{teacher.email || "-"}</span>
+                </div>
+                <div className="flex w-full 2xl:w-1/3 gap-2 items-center lg:w-full md:w-1/3">
                   <FaPhoneAlt className="text-[#FFFB15] text-[14px] font-bold" />
-                  <span className="text-[#FFFB15]">+251 961 0086 00</span>
+                  <span className="text-[#FFFB15]">{teacher.phone || "-"}</span>
                 </div>
               </div>
             </div>
@@ -106,7 +123,9 @@ const SingleTeacherPage = () => {
                 h-6
               />
               <div className="text-[#083765] font-bold">
-                <h1 className="text-xl font-semibold">90%</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.subjects}
+                </h1>
                 <span className="text-gray-400 text-sm">Attendance</span>
               </div>
             </div>
@@ -119,7 +138,9 @@ const SingleTeacherPage = () => {
                 h-6
               />
               <div className="text-[#083765] font-bold">
-                <h1 className="text-xl font-semibold">90%</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.lessons}
+                </h1>
                 <span className="text-gray-400 text-sm">Attendance</span>
               </div>
             </div>
@@ -132,7 +153,9 @@ const SingleTeacherPage = () => {
                 h-6
               />
               <div className="text-[#083765] font-bold">
-                <h1 className="text-xl font-semibold">90%</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.classes}
+                </h1>
                 <span className="text-gray-400 text-sm">Attendance</span>
               </div>
             </div>
